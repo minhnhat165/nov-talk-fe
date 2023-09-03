@@ -16,7 +16,7 @@ const buttonVariants = cva(
       },
       color: {
         default:
-          'bg-gray-200 text-slate-800 enabled:hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:enabled:hover:bg-gray-800',
+          'bg-gray-200 text-text enabled:hover:bg-gray-300 dark:bg-gray-700  dark:hover:bg-gray-800',
         primary: 'text-primary-foreground hover:bg-primary/90 bg-primary ',
       },
       size: {
