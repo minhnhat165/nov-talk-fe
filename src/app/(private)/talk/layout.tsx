@@ -1,4 +1,6 @@
 import { Inbox } from '@/features/chat/components';
+import { appConfig } from '@/configs/app';
+import { cookies } from 'next/headers';
 
 export interface ChatLayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ const ChatLayout = ({ children }: ChatLayoutProps) => {
       <div className="h-screen w-[23.5rem] p-2">
         <Inbox />
       </div>
+
       <div className="flex-1 p-2 pl-0">{children}</div>
     </div>
   );
