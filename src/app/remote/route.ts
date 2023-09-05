@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       value: appConfig.siteName.remote,
       path: '/',
     });
-    return redirect('/');
+    return redirect('/talk');
   }
   return NextResponse.json(token);
 }
