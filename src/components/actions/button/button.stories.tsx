@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@/components/actions';
+import { Button } from '@/components/actions/button';
 import { CheckIcon } from '@heroicons/react/24/solid';
 
 const meta: Meta<typeof Button> = {
