@@ -1,8 +1,8 @@
+import { Children, cloneElement, forwardRef, useMemo } from 'react';
 import Image, { ImageProps } from 'next/image';
 import { VariantProps, cva } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
-import { forwardRef } from 'react';
 
 const avatarVariants = cva('overflow-hidden relative', {
   variants: {
@@ -43,3 +43,50 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 );
 
 Avatar.displayName = 'Avatar';
+
+interface AvatarGroupProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof avatarVariants> {
+  children: React.ReactNode;
+  limit?: number;
+  avatarClassName?: string;
+}
+
+export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
+  (
+    { className, children, limit, size, avatarClassName, shape, ...props },
+    ref,
+  ) => {
+    const renderChildren = useMemo(() => {
+      return Children.map(children, (child, index) => {
+        if (limit && index >= limit) return null;
+        const newChild = child as React.ReactElement;
+        return cloneElement(newChild, {
+          size,
+          shape,
+          className: cn(newChild.props.className, avatarClassName),
+          ...newChild.props,
+        });
+      });
+    }, [avatarClassName, children, limit, shape, size]);
+
+    return (
+      <div ref={ref} className={cn('flex h-fit', className)} {...props}>
+        {renderChildren}
+        {limit && Children.count(children) > limit && (
+          <div
+            className={cn(
+              avatarVariants({ size, shape }),
+              'flex items-center justify-center bg-background font-semibold text-primary/60',
+              avatarClassName,
+            )}
+          >
+            +{Children.count(children) - limit}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
+
+AvatarGroup.displayName = 'AvatarGroup';
