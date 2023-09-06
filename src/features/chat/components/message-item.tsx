@@ -1,7 +1,9 @@
 import { Children, ReactNode, cloneElement, forwardRef } from 'react';
 import { VariantProps, cva } from 'class-variance-authority';
 
+import { Avatar } from '@/components/data-display/avatar';
 import { Message } from '@/features/chat/types';
+import { User } from '@/features/user/types/user';
 import { cn } from '@/lib/utils';
 
 const messageVariants = cva('w-fit min-w-[2.25rem] rounded-3xl p-2 px-3', {
@@ -60,17 +62,35 @@ export interface MessageProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof messageVariants> {
   message: Message;
+  readByUsers?: User[];
 }
 
 export const MessageItem = forwardRef<HTMLDivElement, MessageProps>(
-  ({ message, sender, order, className, ...props }, ref) => {
+  ({ message, sender, order, className, readByUsers, ...props }, ref) => {
     return (
-      <div
-        {...props}
-        ref={ref}
-        className={cn(messageVariants({ sender, order }), className)}
-      >
-        {message.content}
+      <div className="relative">
+        <div
+          {...props}
+          ref={ref}
+          className={cn(messageVariants({ sender, order }), className)}
+        >
+          {message.content}
+        </div>
+        <div
+          className={cn(
+            'ml-auto flex justify-end space-x-0.5',
+            sender === 'me' ? 'mt-1' : 'absolute bottom-0 right-0',
+          )}
+        >
+          {readByUsers?.map((user) => (
+            <Avatar
+              key={user._id}
+              src={user.avatar}
+              alt={user.name}
+              className="h-4 w-4"
+            />
+          ))}
+        </div>
       </div>
     );
   },
@@ -105,7 +125,7 @@ export const MessageItemGroup = forwardRef<
   return (
     <div
       ref={ref}
-      className={cn('flex flex-col-reverse gap-0.5', props.className)}
+      className={cn('flex flex-1 flex-col-reverse gap-0.5', props.className)}
     >
       {props.children && renderChildrenWithOrder(props.children)}
     </div>

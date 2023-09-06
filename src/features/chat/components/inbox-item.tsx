@@ -1,11 +1,12 @@
+import { Avatar, AvatarGroup } from '@/components/data-display/avatar';
 import { Message, Room } from '@/features/chat/types';
 import { forwardRef, useMemo } from 'react';
 
-import { Avatar } from '@/components/data-display/avatar';
 import { Typography } from '@/components/data-display';
 import { User } from '@/features/user/types/user';
 import { cn } from '@/lib/utils';
 import { generateRoomDisplay } from '@/features/chat/utils';
+import { getReadByUsers } from '../utils/get-read-by-users';
 import { usersData } from '@/data/user';
 
 export interface InboxItemProps {
@@ -71,18 +72,16 @@ const ItemSub = ({
   participants: User[];
   currentUserId: User['_id'];
 }) => {
-  const readBy = message?.readBy || [];
-  const participantsById = useMemo(() => {
-    return participants.reduce(
-      (acc, cur) => {
-        acc[cur._id] = cur;
-        return acc;
-      },
-      {} as Record<string, User>,
-    );
-  }, [participants]);
-
-  const isRead = readBy.includes(currentUserId);
+  const isRead = message.readBy?.includes(currentUserId);
+  const readByUsers = useMemo(() => {
+    return getReadByUsers({
+      readBy: message.readBy ?? [],
+      participants,
+      currentUserId,
+      senderId: message.sender._id,
+      showOthers: false,
+    });
+  }, [message.readBy, message.sender._id, participants, currentUserId]);
 
   const preMessage = useMemo(() => {
     if (message.sender._id === currentUserId) {
@@ -109,27 +108,17 @@ const ItemSub = ({
       >
         {preMessage} {message?.content}
       </Typography>
-      {readBy.length > 0 && (
+      {readByUsers.length > 0 && (
         <div className="ml-auto flex items-center pl-2">
-          {readBy.map((userId) => {
-            if (
-              userId === currentUserId ||
-              !participantsById[userId] ||
-              message.sender._id === userId ||
-              message.sender._id !== currentUserId
-            ) {
-              return null;
-            }
-            return (
-              <div key={userId} className="shrink-0">
-                <Avatar
-                  alt={participantsById[userId].name}
-                  src={participantsById[userId].avatar}
-                  className="h-4 w-4"
-                />
-              </div>
-            );
-          })}
+          <AvatarGroup
+            avatarClassName="w-4 h-4"
+            className="text-[0.625rem]"
+            limit={2}
+          >
+            {readByUsers.map((user) => (
+              <Avatar key={user._id} alt={user.name} src={user.avatar} />
+            ))}
+          </AvatarGroup>
         </div>
       )}
     </div>

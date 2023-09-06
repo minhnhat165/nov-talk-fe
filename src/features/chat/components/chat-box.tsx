@@ -35,7 +35,7 @@ export const ChatBox = (props: ChatBoxProps) => {
     <div className="flex h-full">
       <div className="flex h-full w-full flex-col overflow-hidden">
         <Header room={props.room} />
-        <MessageBox />
+        <MessageBox room={props.room} />
         <div className="flex h-20 w-full items-center justify-center bg-primary/5 px-10">
           <ChatInput />
         </div>
