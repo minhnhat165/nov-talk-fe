@@ -5,5 +5,7 @@ import { User } from '@/features/user/types/user';
 export type Message = {
   content: string;
   room?: Room;
-  user: User;
+  sender: User;
+  readBy?: User['_id'][];
+  receivedBy?: User['_id'][];
 } & BaseEntity;
