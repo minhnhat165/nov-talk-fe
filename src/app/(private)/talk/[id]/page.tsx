@@ -1,5 +1,4 @@
 import { ChatBox } from '@/features/chat/components/chat-box';
-import { Room } from '@/features/chat/types';
 import { roomsData } from '@/data/room';
 
 async function getChatRoom(id: string) {
