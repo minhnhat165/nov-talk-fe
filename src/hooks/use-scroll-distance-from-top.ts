@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useScrollDistanceFromTop(threshold: number) {
+export function useScrollDistanceFromTop(threshold: number, isReverse = false) {
   const [isScrolled, setIsScrolled] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       if (ref.current) {
-        const scrollTop = ref.current.scrollTop;
-        if (scrollTop > threshold) {
-          setIsScrolled(true);
+        const { scrollTop } = ref.current;
+        if (isReverse) {
+          setIsScrolled(scrollTop < threshold);
         } else {
-          setIsScrolled(false);
+          setIsScrolled(scrollTop > threshold);
         }
       }
     };
