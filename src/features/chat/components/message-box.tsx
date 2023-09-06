@@ -12,7 +12,7 @@ import { messagesRoomData } from '@/data/message';
 import moment from 'moment';
 import { useRef } from 'react';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
-import { useScrollIntoView } from '@/hooks/use-scroll-to';
+import { useScrollIntoView } from '@/hooks/use-scroll-into-view';
 
 const maxTimeDiff = 5; // 5 minutes
 const maxTimeGroupDiff = 10; // 10 minutes
