@@ -20,7 +20,7 @@ export const roomsData: Room[] = [
   {
     _id: '3',
     participants: [usersData[0], usersData[1], usersData[2]],
-    lastMessage: messagesData[5],
+    lastMessage: messagesData[7],
     isGroup: true,
     name: 'Group 1',
     avatar: imgsData[3],
