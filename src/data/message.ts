@@ -93,7 +93,7 @@ export const messagesRoomData: Message[] = [
   {
     _id: '6',
     content: 'Not much, just working.',
-    sender: usersData[1],
+    sender: usersData[2],
     createdAt: new Date(new Date().getTime() + 1000 * 60 * 5).toISOString(),
   },
   {
@@ -143,6 +143,7 @@ export const messagesRoomData: Message[] = [
     content: 'Yeah, I just finished.',
     sender: usersData[0],
     createdAt: new Date(new Date().getTime() + 1000 * 60 * 18).toISOString(),
+    readBy: [usersData[0]._id, usersData[1]._id],
   },
   {
     _id: '15',
@@ -161,6 +162,7 @@ export const messagesRoomData: Message[] = [
     content: 'finish this up.',
     sender: usersData[1],
     createdAt: new Date(new Date().getTime() + 1000 * 60 * 21).toISOString(),
+    readBy: [usersData[0]._id, usersData[1]._id],
   },
   {
     _id: '18',
@@ -173,11 +175,19 @@ export const messagesRoomData: Message[] = [
     content: 'I’m done!',
     sender: usersData[1],
     createdAt: new Date(new Date().getTime() + 1000 * 60 * 100).toISOString(),
+    readBy: [usersData[0]._id, usersData[2]._id],
   },
   {
     _id: '20',
     content: 'Great, let’s go!',
     sender: usersData[0],
     createdAt: new Date(new Date().getTime() + 1000 * 60 * 101).toISOString(),
+  },
+  {
+    _id: '21',
+    content: 'Great, let’s go!',
+    sender: usersData[0],
+    createdAt: new Date(new Date().getTime() + 1000 * 60 * 107).toISOString(),
+    readBy: [usersData[1]._id, usersData[2]._id],
   },
 ].reverse();
