@@ -28,7 +28,7 @@ export function useScrollDistanceFromTop(threshold: number, isReverse = false) {
       };
     }
     return cleanup;
-  }, [ref, threshold]);
+  }, [isReverse, ref, threshold]);
 
   return { ref, isScrolled };
 }

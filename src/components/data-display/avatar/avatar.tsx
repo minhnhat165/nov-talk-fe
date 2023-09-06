@@ -27,11 +27,12 @@ export interface AvatarProps
     VariantProps<typeof avatarVariants> {}
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  ({ size, shape, className, ...props }, ref) => {
+  ({ size, alt, shape, className, ...props }, ref) => {
     return (
       <div ref={ref} className={cn(avatarVariants({ size, shape }), className)}>
         <Image
           fill
+          alt={alt}
           {...props}
           sizes="(max-width: 640px) 100px, 200px"
           className="object-cover"
