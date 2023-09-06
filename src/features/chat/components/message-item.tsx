@@ -76,21 +76,23 @@ export const MessageItem = forwardRef<HTMLDivElement, MessageProps>(
         >
           {message.content}
         </div>
-        <div
-          className={cn(
-            'ml-auto flex justify-end space-x-0.5',
-            sender === 'me' ? 'mt-1' : 'absolute bottom-0 right-0',
-          )}
-        >
-          {readByUsers?.map((user) => (
-            <Avatar
-              key={user._id}
-              src={user.avatar}
-              alt={user.name}
-              className="h-4 w-4"
-            />
-          ))}
-        </div>
+        {readByUsers?.length && (
+          <div
+            className={cn(
+              'ml-auto flex justify-end space-x-0.5',
+              sender === 'me' ? 'mt-1' : 'absolute bottom-0 right-0',
+            )}
+          >
+            {readByUsers?.map((user) => (
+              <Avatar
+                key={user._id}
+                src={user.avatar}
+                alt={user.name}
+                className="h-4 w-4"
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   },
