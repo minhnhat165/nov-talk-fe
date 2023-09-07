@@ -11,7 +11,7 @@ export const ChatSetting = (props: ChatSettingProps) => {
   return (
     <div className="h-full w-full rounded-md bg-card shadow-sm">
       <div className="flex items-center gap-2 p-4">
-        <Link href={pathname}>
+        <Link href={pathname!}>
           <Button.Icon
             variant="ghost"
             size="sm"

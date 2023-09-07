@@ -29,7 +29,7 @@ const inboxTabs = {
 };
 
 export const Inbox = (props: InboxProps) => {
-  const tab = useSearchParams().get('tab') ?? inboxTabs.default;
+  const tab = useSearchParams()?.get('tab') ?? inboxTabs.default;
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-md bg-card">
@@ -107,7 +107,7 @@ const InboxDefaultTab = () => {
 const InboxList = () => {
   const { isScrolled, ref: scrollRef } = useScrollDistanceFromTop(1);
   const params = useParams();
-  const id = params.id;
+  const id = params?.id;
   return (
     <div
       ref={scrollRef}
