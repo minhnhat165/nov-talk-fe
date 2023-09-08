@@ -1,7 +1,13 @@
 // dynamic file name for api response types
-export type SingleResponse<T, K extends string = 'data'> = {
+export type Response<T> = {
   message: string;
-} & Record<K, T>;
+  data: T;
+};
+
+// export type SingleResponse<T, K extends string = 'data'> = {
+//   message: string;
+// } & Record<K, T>;
+
 export type ListResponse<T, P extends Pagination | CursorPagination> = {
   data: {
     items: T[];
@@ -10,14 +16,14 @@ export type ListResponse<T, P extends Pagination | CursorPagination> = {
   message: string;
 };
 
-type Pagination = {
+export type Pagination = {
   limit: number;
   total: number;
   currentPage: number;
   totalPages: number;
 };
 
-type CursorPagination = {
+export type CursorPagination = {
   hasMore: boolean;
   endCursor: string;
 };

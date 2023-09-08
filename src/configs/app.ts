@@ -12,4 +12,7 @@ export const appConfig = {
   rootApp: {
     url: process.env.ROOT_APP_URL || 'http://localhost:3000',
   },
+  api: {
+    url: process.env.API_URL || 'http://localhost:3000',
+  },
 };
