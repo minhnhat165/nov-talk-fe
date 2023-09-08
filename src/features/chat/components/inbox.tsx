@@ -16,9 +16,11 @@ import { SearchInput } from '@/components/data-entry';
 import { Typography } from '@/components/data-display';
 import { cn } from '@/lib/utils';
 import { roomsData } from '@/data/room';
+import useAuthStore from '@/features/auth/stores/use-auth-store';
 import { useQueryParams } from '@/hooks/use-query-params';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
 import { useState } from 'react';
+import useStore from '@/stores/use-store';
 
 export interface InboxProps {}
 
@@ -108,6 +110,7 @@ const InboxList = () => {
   const { isScrolled, ref: scrollRef } = useScrollDistanceFromTop(1);
   const params = useParams();
   const id = params?.id;
+  const currentUserId = useStore(useAuthStore, (s) => s.user?._id);
   return (
     <div
       ref={scrollRef}

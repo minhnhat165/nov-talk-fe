@@ -1,16 +1,22 @@
+import { InitializeAuthStore } from '@/features/auth/stores/client-init-store';
 import { Sidebar } from '@/components/layout';
 import { appConfig } from '@/configs/app';
-import { cookies } from 'next/headers';
+import { getCurrentUser } from '@/features/auth/api/get-current-user';
+import { redirect } from 'next/navigation';
 
-export default function PrivateLayout({
+export default async function PrivateLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const currentSite = cookies().get('site');
+  const profile = await getCurrentUser();
+  if (!profile) {
+    redirect('/login');
+  }
   return (
     <div className="flex">
-      {currentSite?.value === appConfig.siteName.local && <Sidebar />}
+      <InitializeAuthStore user={profile} />
+      <Sidebar />
       <div className="flex-1">{children}</div>
     </div>
   );

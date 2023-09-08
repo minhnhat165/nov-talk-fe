@@ -1,14 +1,7 @@
-export type SingleResponse<T> = {
+// dynamic file name for api response types
+export type SingleResponse<T, K extends string = 'data'> = {
   message: string;
-} & (
-  | {
-      data: T;
-    }
-  | {
-      status: number;
-    }
-);
-
+} & Record<K, T>;
 export type ListResponse<T, P extends Pagination | CursorPagination> = {
   data: {
     items: T[];

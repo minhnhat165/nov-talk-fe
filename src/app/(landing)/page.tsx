@@ -1,18 +1,14 @@
 import { Button } from '@/components/actions/button';
 import Link from 'next/link';
-import { SingleResponse } from '@/types/api';
-import { User } from '@/features/user/types/user';
 import { appConfig } from '@/configs/app';
+import { getAccessToken } from '@/utils/cookies';
+import { redirect } from 'next/navigation';
 
-async function getProfile() {
-  const url = new URL('/api/auth/me', appConfig.url);
-  try {
-    const res = await fetch(url);
-    console.log(res.body);
-  } catch (error) {}
-}
 export default async function LadingPage() {
-  // const profile = await getProfile();
+  const isAuthenticated = !!getAccessToken()?.value;
+  if (isAuthenticated) {
+    redirect('/talk');
+  }
   return (
     <main className="flex min-h-screen  flex-col items-center justify-center">
       <Link
