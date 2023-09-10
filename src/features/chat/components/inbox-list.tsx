@@ -3,6 +3,7 @@ import { forwardRef, memo, useMemo } from 'react';
 import { InboxItem } from '@/features/chat/components/inbox-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { cn } from '@/lib/utils';
+import { inboxTypeMap } from './inbox/inbox-main-tab';
 import { roomApi } from '@/features/chat/api/room-api';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -10,10 +11,6 @@ import { useParams } from 'next/navigation';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
 import useStore from '@/stores/use-store';
 
-export const inboxTypeMap = {
-  all: 'all',
-  unread: 'unread',
-};
 interface InboxListProps {
   type: keyof typeof inboxTypeMap;
 }

@@ -28,7 +28,7 @@ export interface ChatCreatorProps {
 }
 
 export const ChatCreator = (props: ChatCreatorProps) => {
-  const { data, setSearchTerm } = useSearch<User>(searchApi.users);
+  const { data, setSearchTerm } = useSearch<User[]>(searchApi.users);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const { backToDefault } = useInboxContext();
   const router = useRouter();
@@ -116,7 +116,7 @@ export const ChatCreator = (props: ChatCreatorProps) => {
           />
         </div>
         <div className="w-full flex-1 overflow-y-scroll px-2">
-          {data.map((user) => (
+          {data?.map((user) => (
             <UserItem
               isActive={!!selectedUsers.find((u) => u._id === user._id)}
               onClick={() => handleClickUser(user)}
