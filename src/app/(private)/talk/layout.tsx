@@ -1,4 +1,4 @@
-import { Inbox } from '@/features/chat/components';
+import { Inbox } from '@/features/chat/components/inbox';
 
 export interface ChatLayoutProps {
   children: React.ReactNode;

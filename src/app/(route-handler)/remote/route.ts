@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { appConfig } from '@/configs/app';
+import { appConfig } from '@/configs/app-config';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

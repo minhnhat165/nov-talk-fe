@@ -1,6 +1,6 @@
 import { Button } from '@/components/actions/button';
 import Link from 'next/link';
-import { appConfig } from '@/configs/app';
+import { appConfig } from '@/configs/app-config';
 import { getAccessToken } from '@/utils/cookies';
 import { redirect } from 'next/navigation';
 

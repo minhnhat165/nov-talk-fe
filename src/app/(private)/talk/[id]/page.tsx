@@ -1,12 +1,14 @@
 import { ChatBox } from '@/features/chat/components/chat-box';
-import { roomsData } from '@/data/room';
+import { Response } from '@/types/api';
+import { Room } from '@/features/chat/types';
+import { fetchApi } from '@/utils/data-fetching';
 
 async function getChatRoom(id: string) {
-  const data = roomsData.find((room) => room._id === id);
+  const data = await fetchApi<Response<Room>>(`/rooms/${id}`);
   if (!data) {
     throw new Error('Not Found');
   }
-  return data;
+  return data.data;
 }
 
 const ChatRoomPage = async (props: {
@@ -15,6 +17,10 @@ const ChatRoomPage = async (props: {
   };
 }) => {
   const room = await getChatRoom(props.params.id);
+  if (!room) {
+    return <div>Not Found</div>;
+  }
+  console.log(room);
   return (
     <div className="h-full w-full overflow-hidden rounded-lg bg-card">
       {<ChatBox room={room} />}

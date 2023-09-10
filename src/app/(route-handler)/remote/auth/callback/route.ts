@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { Response } from '@/types/api';
 import { User } from '@/features/user/types/user';
-import { appConfig } from '@/configs/app';
+import { appConfig } from '@/configs/app-config';
 import { cookies } from 'next/headers';
 import jwtDecode from 'jwt-decode';
 import { redirect } from 'next/navigation';

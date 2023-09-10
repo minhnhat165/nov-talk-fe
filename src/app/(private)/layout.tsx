@@ -1,6 +1,5 @@
 import { InitializeAuthStore } from '@/features/auth/stores/client-init-store';
 import { Sidebar } from '@/components/layout';
-import { appConfig } from '@/configs/app';
 import { getCurrentUser } from '@/features/auth/api/get-current-user';
 import { redirect } from 'next/navigation';
 
