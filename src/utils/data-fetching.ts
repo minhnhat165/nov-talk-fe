@@ -5,7 +5,7 @@ import { getAccessToken } from '@/utils/cookies';
 const baseUrl = process.env.API_URL;
 
 export async function fetchApi<T>(path: string, options?: RequestInit) {
-  const url = new URL(`api${path}`, baseUrl);
+  const url = new URL(`api${path}`, baseUrl).toString();
   const accessToken = getAccessToken();
   const res = await fetch(url, {
     ...options,
