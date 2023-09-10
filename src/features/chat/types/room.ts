@@ -8,4 +8,6 @@ export type Room = {
   participants: User[];
   lastMessage?: Message;
   isGroup: boolean;
+  newMessageAt?: string;
+  link?: string;
 } & BaseEntity;
