@@ -4,12 +4,12 @@ import { VariantProps, cva } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-const avatarVariants = cva('overflow-hidden relative', {
+const avatarVariants = cva('overflow-hidden shrink-0 relative aspect-square', {
   variants: {
     size: {
-      sm: 'w-9 h-9',
-      md: 'w-10 h-10',
-      lg: 'w-12 h-12',
+      sm: 'h-9',
+      md: 'h-10',
+      lg: 'h-12',
     },
     shape: {
       circle: 'rounded-full',
@@ -27,15 +27,19 @@ export interface AvatarProps
     VariantProps<typeof avatarVariants> {}
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  ({ size, alt, shape, className, ...props }, ref) => {
+  ({ size, alt, shape, className, src, ...props }, ref) => {
     return (
       <div ref={ref} className={cn(avatarVariants({ size, shape }), className)}>
         <Image
+          {...props}
           fill
           alt={alt}
-          {...props}
           sizes="(max-width: 640px) 100px, 200px"
           className="object-cover"
+          src={
+            src ||
+            'https://res.cloudinary.com/devemail/image/upload/v1689673231/avatar/jys86gp3rnklfb6e6rzr.jpg'
+          }
         />
       </div>
     );
