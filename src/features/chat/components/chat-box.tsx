@@ -18,12 +18,13 @@ import {
 } from '@/components/data-display/popover';
 import { useMemo, useState } from 'react';
 
-import { Avatar } from '@/components/data-display/avatar';
 import { Button } from '@/components/actions/button';
+import { InboxItemAvatar } from '@/features/chat/components/inbox-item';
 import { MessageBox } from '@/features/chat/components/message-box';
 import { Room } from '@/features/chat/types';
 import { Typography } from '@/components/data-display';
 import { generateRoomDisplay } from '../utils';
+import useAuthStore from '@/features/auth/stores/use-auth-store';
 
 export interface ChatBoxProps {
   room: Room;
@@ -48,11 +49,15 @@ export const ChatBox = (props: ChatBoxProps) => {
 };
 
 const Header = ({ room: _room }: { room: Room }) => {
-  const room = useMemo(() => generateRoomDisplay(_room, '1'), [_room]);
+  const currentUserId = useAuthStore((s) => s.user?._id) || '';
+  const room = useMemo(
+    () => generateRoomDisplay(_room, currentUserId),
+    [_room, currentUserId],
+  );
   return (
-    <div className="flex h-14 w-full items-center border-b px-4">
+    <div className="flex w-full items-center border-b px-4 py-2">
       <div className="flex items-center gap-2">
-        <Avatar src={room.avatar!} alt={room.name!} />
+        <InboxItemAvatar room={room} />
         <div>
           <Typography variant="h4">{room.name}</Typography>
         </div>
