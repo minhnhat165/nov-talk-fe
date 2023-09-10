@@ -1,16 +1,12 @@
 import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@/lib/utils';
-import {
-  ButtonHTMLAttributes,
-  Children,
-  ReactElement,
-  forwardRef,
-} from 'react';
-import { buttonVariants } from '@/components/actions/button/variants';
 import { IconButton } from '@/components/actions/button/button.icon';
 import { Icon } from '@/components/actions/button/icon';
+import { buttonVariants } from '@/components/actions/button/variants';
+import { Spinner } from '@/components/feedback/spinner';
+import { cn } from '@/lib/utils';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 
 type ButtonVariantsProps = VariantProps<typeof buttonVariants>;
 type NativeButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
@@ -24,6 +20,7 @@ export type ButtonProps = Omit<NativeButtonProps, keyof ButtonVariantsProps> &
   ButtonVariantsProps &
   IconProps & {
     asChild?: boolean;
+    loading?: boolean;
   };
 
 export interface ButtonComponent
@@ -37,6 +34,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
+      loading = false,
+      disabled = false,
       variant,
       size,
       color,
@@ -57,6 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonVariants({ variant, size, className, color, shape }),
         )}
         ref={ref}
+        disabled={disabled || loading}
         {...props}
       >
         <>
@@ -65,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               {startIcon}
             </Icon>
           )}
-          {children}
+          {loading ? <Spinner size={size} /> : <>{children}</>}
           {endIcon && <Icon type="right">{endIcon}</Icon>}
         </>
       </Comp>
