@@ -16,10 +16,16 @@ export const messageApi = {
     roomId: string;
     media?: Media[];
     content: string;
-    localId: string;
+    clientTempId: string;
   }) {
-    const { localId, ...sendData } = data;
-    const res: Response<Message> = await axios.post(basePath, sendData);
+    const res: Response<Message> = await axios.post(basePath, data);
+    return res.data;
+  },
+
+  async remove({ id, type }: { id: string; type: 'me' | 'all' }) {
+    const res: Response<Message> = await axios.delete(`${basePath}/${id}`, {
+      params: { type },
+    });
     return res.data;
   },
 };

@@ -37,4 +37,15 @@ export const roomApi = {
     const res: ListResponse<Message, CursorPagination> = await axios.get(path);
     return res.data;
   },
+  async deleteRoom(roomId: string) {
+    const res: Response<null> = await axios.delete(`${basePath}/${roomId}`);
+    return res.data;
+  },
+
+  async leaveRoom(roomId: string) {
+    const res: Response<null> = await axios.delete(
+      `${basePath}/${roomId}/leave`,
+    );
+    return res.data;
+  },
 };

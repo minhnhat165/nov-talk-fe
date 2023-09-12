@@ -55,7 +55,7 @@ export const ChatBoxFooter = forwardRef<HTMLDivElement, ChatBoxFooterProps>(
     const { mutateAsync } = useMutation({
       mutationFn: messageApi.sendMessage,
       onSuccess: (data, variables) => {
-        replaceMessage(data, variables.localId);
+        // replaceMessage(data, variables.clientTempId);
       },
     });
 
@@ -117,7 +117,7 @@ export const ChatBoxFooter = forwardRef<HTMLDivElement, ChatBoxFooterProps>(
         mutateAsync({
           content,
           roomId,
-          localId: localMessage._id,
+          clientTempId: localMessage._id,
         });
       }
 
@@ -140,7 +140,7 @@ export const ChatBoxFooter = forwardRef<HTMLDivElement, ChatBoxFooterProps>(
         mutateAsync({
           content: '',
           roomId,
-          localId: localImageMessage._id,
+          clientTempId: localImageMessage._id,
           media: imagesUploaded,
         });
       }
@@ -159,7 +159,7 @@ export const ChatBoxFooter = forwardRef<HTMLDivElement, ChatBoxFooterProps>(
             mutateAsync({
               content: '',
               roomId,
-              localId: message._id,
+              clientTempId: message._id,
               media: [
                 {
                   ...documents[index],

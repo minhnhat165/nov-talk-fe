@@ -1,5 +1,6 @@
 import { forwardRef, memo, useMemo } from 'react';
 
+import { InboxItemMenu } from './inbox-item-menu';
 import { ItemAvatar } from '@/features/chat/components/inbox-item/inbox-item-avatar';
 import { ItemSub } from '@/features/chat/components/inbox-item/inbox-item-sub';
 import Link from 'next/link';
@@ -34,7 +35,7 @@ const InboxItem = forwardRef<HTMLDivElement, InboxItemProps>(
         <div
           ref={ref}
           className={cn(
-            'flex cursor-pointer items-center justify-between rounded-lg p-2 transition-all',
+            'group relative flex cursor-pointer items-center justify-between rounded-lg p-2 transition-all',
             data.link === `/talk/${currentRoomId}` || isActive
               ? 'bg-gradient-to-br from-primary/30 to-primary/5 shadow'
               : 'bg-transparent hover:bg-background/75',
@@ -63,6 +64,9 @@ const InboxItem = forwardRef<HTMLDivElement, InboxItemProps>(
                 />
               )}
             </div>
+          </div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100">
+            <InboxItemMenu room={data} />
           </div>
         </div>
       </Link>
