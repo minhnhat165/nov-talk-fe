@@ -25,6 +25,10 @@ export async function GET(req: NextRequest) {
     },
   });
 
+  if (!res.ok) {
+    return NextResponse.error();
+  }
+
   const data: Response<{
     tokens: Tokens;
     user: User;
