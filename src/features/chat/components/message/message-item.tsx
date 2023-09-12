@@ -4,12 +4,13 @@ import { Avatar } from '@/components/data-display/avatar';
 import { DocumentIcon } from '@heroicons/react/24/solid';
 import { Message } from '@/features/chat/types';
 import { MessageImgGallery } from './message-img-gallery';
+import { MessageMenu } from './message-menu';
 import { User } from '@/features/user/types/user';
 import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
 
-const messageVariants = cva(
-  'w-fit max-w-xl min-w-[2.25rem] overflow-hidden rounded-3xl',
+export const messageVariants = cva(
+  'w-fit max-w-xl min-w-[2.25rem] relative overflow-hidden rounded-3xl',
   {
     variants: {
       sender: {
@@ -21,6 +22,13 @@ const messageVariants = cva(
         first: '',
         middle: 'rounded-3xl',
         last: '',
+      },
+      status: {
+        removed: 'border',
+        pending: '',
+        sent: '',
+        received: '',
+        read: '',
       },
     },
 
@@ -59,6 +67,7 @@ const messageVariants = cva(
     defaultVariants: {
       sender: 'other',
       order: 'default',
+      status: 'sent',
     },
   },
 );
@@ -73,77 +82,97 @@ export interface MessageProps
 export const MessageItem = forwardRef<HTMLDivElement, MessageProps>(
   ({ message, sender, order, className, readByUsers, ...props }, ref) => {
     return (
-      <div className={cn('relative', sender === 'me' ? 'pl-20' : 'pr-20')}>
-        <div
-          {...props}
-          ref={ref}
-          className={cn(
-            messageVariants({ sender, order }),
-            className,
-            message.media?.length &&
-              message.media?.length > 1 &&
-              'rounded-none',
-          )}
-        >
-          {message.content && (
-            <div
-              className={cn(
-                'px-3 py-2',
-                sender === 'me'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-background-foreground bg-background',
-              )}
-            >
-              <span className="break-all">{message.content}</span>
-            </div>
-          )}
-          {message?.media && message.media.length > 0 && (
-            <>
-              {message.media[0].type === 'image' && (
-                <MessageImgGallery images={message.media} />
-              )}
-              {message.media[0].type === 'document' && (
-                <a
-                  download
-                  href={message.media[0].url}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary/10 p-2 px-3"
-                >
-                  <DocumentIcon className="h-8 w-8 text-primary/60" />
-                  <div className="flex flex-col">
-                    <span title={message.media[0].name} className="text-sm">
-                      {message.media[0].name}
-                    </span>
-                    <span className="text-xs text-primary/60">
-                      {formatFileSize(message.media[0].size!)}
-                    </span>
-                  </div>
-                </a>
-              )}
-            </>
-          )}
-        </div>
-        {readByUsers?.length && (
+      <div
+        className={cn(
+          'group relative flex',
+          sender === 'me' ? 'justify-end pl-20' : 'pr-20',
+        )}
+      >
+        <div className="relative w-fit">
           <div
+            {...props}
+            ref={ref}
             className={cn(
-              'ml-auto flex justify-end space-x-0.5',
-              sender === 'me' ? 'mt-1' : 'absolute bottom-0 right-0',
+              messageVariants({ sender, order, status: message.status }),
+              className,
+              message.media?.length &&
+                message.media?.length > 1 &&
+                'rounded-none',
             )}
           >
-            {readByUsers?.map((user) => (
-              <Avatar
-                key={user._id}
-                src={user.avatar}
-                alt={user.name}
-                className="h-4 w-4"
-              />
-            ))}
+            {message.content && (
+              <div
+                className={cn(
+                  'px-3 py-2',
+                  sender === 'me'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-background-foreground bg-background',
+                  message.status === 'removed' && 'bg-transparent text-text/60',
+                )}
+              >
+                <span className="break-all">{message.content}</span>
+              </div>
+            )}
+            {message?.media && message.media.length > 0 && (
+              <>
+                {message.media[0].type === 'image' && (
+                  <MessageImgGallery images={message.media} />
+                )}
+                {message.media[0].type === 'document' && (
+                  <a
+                    download
+                    href={message.media[0].url}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary/10 p-2 px-3"
+                  >
+                    <DocumentIcon className="h-8 w-8 text-primary/60" />
+                    <div className="flex flex-col">
+                      <span title={message.media[0].name} className="text-sm">
+                        {message.media[0].name}
+                      </span>
+                      <span className="text-xs text-primary/60">
+                        {formatFileSize(message.media[0].size!)}
+                      </span>
+                    </div>
+                  </a>
+                )}
+              </>
+            )}
           </div>
-        )}
-        {message.status === 'pending' && (
-          <div className="text-end text-sm text-text/80">
-            <span>sending</span>
+          {readByUsers?.length && (
+            <div
+              className={cn(
+                'ml-auto flex justify-end space-x-0.5',
+                sender === 'me' ? 'mt-1' : 'absolute bottom-0 right-0',
+              )}
+            >
+              {readByUsers?.map((user) => (
+                <Avatar
+                  key={user._id}
+                  src={user.avatar}
+                  alt={user.name}
+                  className="h-4 w-4"
+                />
+              ))}
+            </div>
+          )}
+          {message.status === 'pending' && (
+            <div className="text-end text-sm text-text/80">
+              <span>sending</span>
+            </div>
+          )}
+          <div
+            className={cn(
+              'absolute top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100',
+              sender === 'me'
+                ? '-left-4 -translate-x-full'
+                : '-right-4 translate-x-full',
+            )}
+          >
+            {message.status !== 'removed' && (
+              <MessageMenu isMine={sender === 'me'} message={message} />
+            )}
           </div>
-        )}
+        </div>
       </div>
     );
   },

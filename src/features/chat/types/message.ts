@@ -1,9 +1,15 @@
 import { BaseEntity } from '@/types/base-entity';
 import { Room } from '@/features/chat/types/room';
 import { User } from '@/features/user/types/user';
+import { VariantProps } from 'class-variance-authority';
+import { messageVariants } from '../components/message/message-item';
 
 export type MessageType = 'text' | 'media' | 'call';
-export type MessageStatus = 'sent' | 'delivered' | 'read' | 'pending';
+export type MessageStatus = Pick<
+  VariantProps<typeof messageVariants>,
+  'status'
+>['status'];
+
 export type MediaType = 'image' | 'video' | 'audio' | 'document';
 export type Media = {
   url: string;
