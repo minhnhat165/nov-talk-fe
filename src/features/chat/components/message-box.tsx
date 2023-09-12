@@ -1,20 +1,22 @@
 'use client';
 
-import {
-  MessageItem,
-  MessageItemGroup,
-} from '@/features/chat/components/message-item';
 import { useMemo, useRef } from 'react';
 
 import { ArrowDownIcon } from '@heroicons/react/24/solid';
 import { Avatar } from '@/components/data-display/avatar';
 import { Button } from '@/components/actions/button';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Message } from '@/features/chat/types/message';
+import { MessageItem } from '@/features/chat/components/message/message-item';
+import { MessageItemGroup } from './message/message-group';
 import { Room } from '@/features/chat/types/room';
+import { Spinner } from '@/components/feedback/spinner';
 import { User } from '@/features/user/types/user';
+import { formatTimeDisplay } from '../utils';
 import { getReadByUsers } from '../utils/get-read-by-users';
-import { messagesRoomData } from '@/data/message';
 import moment from 'moment';
+import useAuthStore from '@/features/auth/stores/use-auth-store';
+import { useChatBox } from './chat-box/chat-box-context';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
 import { useScrollIntoView } from '@/hooks/use-scroll-into-view';
 
@@ -25,7 +27,10 @@ type MessageGroup = {
   lastMessage: Message;
 };
 export const MessageBox = ({ room }: { room: Room }) => {
-  const messagesData = messagesRoomData;
+  const currentUserId = useAuthStore((s) => s.user?._id);
+  const { hasNextPage, loadMoreMessages, refetchMessages, messages } =
+    useChatBox();
+
   const { ref, isScrolled } = useScrollDistanceFromTop(0, true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { scrollIntoView } = useScrollIntoView(bottomRef);
@@ -38,7 +43,7 @@ export const MessageBox = ({ room }: { room: Room }) => {
           user: participant,
         }) as { messageId: Message['_id'] | null; user: User },
     );
-    const data = messagesData.reduce((acc, message) => {
+    const data = messages.reduce((acc, message) => {
       getReadByUsers({
         currentUserId: '1',
         readBy: message.readBy ?? [],
@@ -109,57 +114,79 @@ export const MessageBox = ({ room }: { room: Room }) => {
         [key: Message['_id']]: User[];
       };
     };
-  }, [messagesData, room.participants]);
-
+  }, [messages, room.participants]);
   return (
     <div className="relative flex h-full w-full flex-1 overflow-hidden">
       <div
         ref={ref}
+        id="inbox-list"
         className="flex w-full flex-1 flex-col-reverse gap-2 overflow-y-scroll bg-primary/5 px-4 py-4"
       >
         <div ref={bottomRef} className="h-1 w-1" />
-        {messagesGroup.map((group, index) => {
-          const timeDiff = moment(moment(group.lastMessage.createdAt)).diff(
-            messagesGroup[index + 1]?.messages[0].createdAt ?? moment(),
-            'minute',
-          );
-          const isShowTimeGroup = timeDiff > maxTimeGroupDiff;
-          const isMe = group.lastMessage.sender._id === '1';
-          return (
-            <div key={group.lastMessage._id}>
-              {isShowTimeGroup && (
-                <div className="my-4 flex items-center justify-center">
-                  <div className="flex items-center space-x-2">
-                    <div className="h-[1px] w-16 bg-primary/30" />
-                    <div className="text-sm text-primary/60">
-                      {timeDisplay(group.lastMessage.createdAt!)}
-                    </div>
-                    <div className="h-[1px] w-16 bg-primary/30" />
-                  </div>
-                </div>
-              )}
-              <div className="flex w-full gap-1">
-                {!isMe && (
-                  <Avatar
-                    className="mb-0.5 mt-auto h-7 w-7"
-                    src={group.lastMessage.sender.avatar}
-                    alt={group.lastMessage.sender.name}
-                  />
-                )}
-                <MessageItemGroup>
-                  {group.messages.map((message) => (
-                    <MessageItem
-                      key={message._id}
-                      message={message}
-                      sender={isMe ? 'me' : 'other'}
-                      readByUsers={userAtMessage[message._id]}
-                    />
-                  ))}
-                </MessageItemGroup>
-              </div>
+
+        <InfiniteScroll
+          scrollableTarget="inbox-list"
+          dataLength={messagesGroup.length}
+          next={loadMoreMessages}
+          hasMore={hasNextPage || false}
+          loader={
+            <div className="absolute left-1/2 top-6 -translate-x-1/2 rounded-full bg-primary/10 p-2 text-primary">
+              <Spinner size="lg" />
             </div>
-          );
-        })}
+          }
+          refreshFunction={refetchMessages}
+          inverse={true}
+          scrollThreshold={0.7}
+          className="flex flex-col-reverse gap-2"
+        >
+          {messagesGroup.map((group, index) => {
+            const timeDiff = moment(moment(group.lastMessage.createdAt)).diff(
+              messagesGroup[index + 1]?.messages[0].createdAt ?? moment(),
+              'minute',
+            );
+            const isShowTimeGroup = timeDiff > maxTimeGroupDiff;
+            const isMe = group.lastMessage.sender._id === currentUserId;
+            return (
+              <div key={group.lastMessage._id}>
+                {isShowTimeGroup && (
+                  <div className="my-4 flex items-center justify-center">
+                    <div className="flex items-center space-x-2">
+                      <div className="h-[1px] w-16 bg-primary/30" />
+                      <div className="text-sm text-primary/60">
+                        {formatTimeDisplay(group.lastMessage.createdAt!)}
+                      </div>
+                      <div className="h-[1px] w-16 bg-primary/30" />
+                    </div>
+                  </div>
+                )}
+                {!isMe && room.isGroup && (
+                  <div className="pl-11 text-sm">
+                    <span>{group.lastMessage.sender.name}</span>
+                  </div>
+                )}
+                <div className="flex w-full gap-1">
+                  {!isMe && (
+                    <Avatar
+                      className="mb-0.5 mt-auto h-7 w-7"
+                      src={group.lastMessage.sender.avatar}
+                      alt={group.lastMessage.sender.name}
+                    />
+                  )}
+                  <MessageItemGroup>
+                    {group.messages.map((message) => (
+                      <MessageItem
+                        key={message._id}
+                        message={message}
+                        sender={isMe ? 'me' : 'other'}
+                        readByUsers={userAtMessage[message._id]}
+                      />
+                    ))}
+                  </MessageItemGroup>
+                </div>
+              </div>
+            );
+          })}
+        </InfiniteScroll>
       </div>
       {isScrolled && (
         <Button.Icon
@@ -172,20 +199,4 @@ export const MessageBox = ({ room }: { room: Room }) => {
       )}
     </div>
   );
-};
-
-const timeDisplay = (time: string) => {
-  const dateMoment = moment(time);
-
-  if (dateMoment.get('year') !== moment().get('year')) {
-    return dateMoment.format('MMM DD, YYYY, LT');
-  }
-  switch (moment().diff(dateMoment, 'day')) {
-    case 0:
-      return dateMoment.format('LT');
-    case 1:
-      return 'Yesterday, ' + dateMoment.format('LT');
-    default:
-      return dateMoment.format('MMM DD, LT');
-  }
 };

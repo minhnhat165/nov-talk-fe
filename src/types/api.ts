@@ -24,6 +24,6 @@ export type Pagination = {
 };
 
 export type CursorPagination = {
-  hasMore: boolean;
+  hasNextPage: boolean;
   endCursor: string;
 };

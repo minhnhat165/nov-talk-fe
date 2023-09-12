@@ -16,4 +16,5 @@ export const novFont = localFont({
       weight: '700',
     },
   ],
+  preload: true,
 });

@@ -1,10 +1,13 @@
-import { forwardRef, memo, useMemo } from 'react';
+import { forwardRef, memo, useEffect, useMemo } from 'react';
 
 import { InboxItem } from '@/features/chat/components/inbox-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Room } from '../types';
 import { cn } from '@/lib/utils';
 import { inboxTypeMap } from './inbox/inbox-main-tab';
 import { roomApi } from '@/features/chat/api/room-api';
+import socket from '@/lib/socket';
+import { socketConfig } from '@/configs/socket-config';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
@@ -21,16 +24,10 @@ const InboxList = forwardRef<HTMLDivElement, InboxListProps>(
     const params = useParams();
     const currentRoomId = params?.id;
     const { isScrolled, ref: scrollRef } = useScrollDistanceFromTop(1);
+    const key = useMemo(() => ['rooms', type], [type]);
 
-    const {
-      data,
-      refetch,
-      fetchNextPage,
-      hasNextPage,
-      isFetching,
-      isFetchingNextPage,
-    } = useInfiniteQuery({
-      queryKey: ['rooms', type],
+    const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery({
+      queryKey: key,
       queryFn: ({ pageParam }) =>
         roomApi.getRooms({ cursor: pageParam, limit: 10, type }),
       getNextPageParam: (lastPage) => lastPage.pageInfo.endCursor,
@@ -39,6 +36,23 @@ const InboxList = forwardRef<HTMLDivElement, InboxListProps>(
     const rooms = useMemo(() => {
       return data?.pages.map((page) => page.items).flat() ?? [];
     }, [data]);
+
+    const updateRoom = (room: Partial<Room>) => {
+      refetch();
+    };
+
+    useEffect(() => {
+      socket.on(
+        socketConfig.events.room.update,
+        (payload: { roomId: string; data: Partial<Room> }) => {
+          updateRoom(payload.data);
+        },
+      );
+      return () => {
+        socket.off(socketConfig.events.room.update);
+      };
+    }, []);
+
     return (
       <div ref={ref} className="h-full w-full overflow-hidden">
         <div
@@ -76,6 +90,7 @@ const InboxList = forwardRef<HTMLDivElement, InboxListProps>(
                 data={room}
                 isActive={currentRoomId === room._id}
                 currentUserId={currentUserId!}
+                currentRoomId={currentRoomId as string}
               />
             ))}
           </InfiniteScroll>

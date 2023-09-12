@@ -1,6 +1,6 @@
 import { CursorPagination, ListResponse, Response } from '@/types/api';
+import { Message, Room } from '../types';
 
-import { Room } from '../types';
 import { axios } from '@/configs/axios-config';
 import { inboxTypeMap } from '../components/inbox/inbox-main-tab';
 import queryString from 'query-string';
@@ -27,6 +27,14 @@ export const roomApi = {
       data.avatar = res.secure_url;
     }
     const res: Response<Room> = await axios.post(basePath, data);
+    return res.data;
+  },
+  async getMessages(roomId: string, params: CursorParams) {
+    const path = queryString.stringifyUrl({
+      url: `${basePath}/${roomId}/messages`,
+      query: params,
+    });
+    const res: ListResponse<Message, CursorPagination> = await axios.get(path);
     return res.data;
   },
 };

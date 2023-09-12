@@ -13,9 +13,10 @@ export interface InboxItemProps {
   data: Room;
   isActive?: boolean;
   currentUserId: User['_id'];
+  currentRoomId?: Room['_id'];
 }
 const InboxItem = forwardRef<HTMLDivElement, InboxItemProps>(
-  ({ data: _data, isActive, currentUserId }, ref) => {
+  ({ data: _data, isActive, currentUserId, currentRoomId }, ref) => {
     const data = useMemo(
       () => generateRoomDisplay(_data, currentUserId),
       [_data, currentUserId],
@@ -33,8 +34,8 @@ const InboxItem = forwardRef<HTMLDivElement, InboxItemProps>(
         <div
           ref={ref}
           className={cn(
-            'flex cursor-pointer items-center justify-between rounded-md p-2 transition-all',
-            isActive
+            'flex cursor-pointer items-center justify-between rounded-lg p-2 transition-all',
+            data.link === `/talk/${currentRoomId}` || isActive
               ? 'bg-gradient-to-br from-primary/30 to-primary/5 shadow'
               : 'bg-transparent hover:bg-background/75',
           )}
