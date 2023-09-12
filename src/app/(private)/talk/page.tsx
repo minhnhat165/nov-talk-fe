@@ -1,4 +1,3 @@
-import { Button } from '@/components/actions/button';
 import { Typography } from '@/components/data-display';
 
 export default function ChatPage() {
@@ -10,12 +9,6 @@ export default function ChatPage() {
           Choose from your existing conversations, start a new one, or just keep
           swimming.
         </Typography>
-
-        <div>
-          <Button className="mt-8" size="lg" color="primary" shape="circle">
-            New conversation
-          </Button>
-        </div>
       </div>
     </main>
   );
