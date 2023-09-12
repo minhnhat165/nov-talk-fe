@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { redirect, useRouter } from 'next/navigation';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 import { CursorPagination } from '@/types/api';
@@ -44,6 +45,7 @@ export const ChatBoxProvider = ({
   const updateRoom = useCallback((room: Room) => {
     setRoom((old) => ({ ...old, ...room }));
   }, []);
+  const router = useRouter();
   const queryClient = useQueryClient();
   const key = useMemo(() => ['messages', room._id], [room._id]);
   const { data, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -97,11 +99,54 @@ export const ChatBoxProvider = ({
     (message: Message, replaceMessageId: string) => {
       queryClient.setQueryData<typeof data | undefined>(key, (old) => {
         if (!old) return old;
+        let hasReplaceMessage = false;
+        const newPage = old?.pages.map((page) => {
+          return {
+            ...page,
+            items: page.items.map((item) => {
+              if (item._id === replaceMessageId) {
+                hasReplaceMessage = true;
+                return {
+                  ...item,
+                  ...message,
+                };
+              }
+              return item;
+            }),
+          };
+        });
+        if (!hasReplaceMessage) {
+          newPage.unshift({
+            pageInfo: {
+              endCursor: message._id,
+              hasNextPage: false,
+            },
+            items: [message],
+          });
+        }
+        return {
+          ...old,
+          pages: newPage,
+        };
+      });
+    },
+    [queryClient, key],
+  );
+
+  const updateMessage = useCallback(
+    (message: Message) => {
+      queryClient.setQueryData<typeof data | undefined>(key, (old) => {
+        if (!old) return old;
         const newPage = old?.pages.map((page) => {
           return {
             ...page,
             items: page.items.map((item) =>
-              item._id === replaceMessageId ? message : item,
+              item._id === message._id
+                ? {
+                    ...item,
+                    ...message,
+                  }
+                : item,
             ),
           };
         });
@@ -114,32 +159,39 @@ export const ChatBoxProvider = ({
     [queryClient, key],
   );
 
-  const updateMessage = useCallback(
-    (message: Message) => {
-      let pageData = queryClient.getQueryData<typeof data | undefined>(key);
-      if (!pageData) return;
-      const isExist = pageData.pages.some((page) =>
-        page.items.some((item) => item._id === message._id),
-      );
-      if (isExist) {
-        replaceMessage(message, message._id);
-      } else {
-        addMessage(message);
-      }
-    },
-    [addMessage, key, queryClient, replaceMessage],
-  );
-
   useEffect(() => {
     socket.emit(socketConfig.events.room.join, room._id);
-    socket.on(socketConfig.events.message.new, (message: Message) => {
-      addMessage(message);
+    socket.on(socketConfig.events.room.delete, (roomId) => {
+      if (roomId === room._id) {
+        router.push('/talk');
+      }
+    });
+    socket.on(socketConfig.events.room.leave, (roomId) => {
+      if (roomId === room._id) {
+        router.push('/talk');
+      }
+    });
+
+    socket.on(
+      socketConfig.events.message.new,
+      ({
+        clientTempId,
+        message,
+      }: {
+        message: Message;
+        clientTempId: string;
+      }) => {
+        replaceMessage(message, clientTempId);
+      },
+    );
+    socket.on(socketConfig.events.message.update, (message: Message) => {
+      updateMessage(message);
     });
     return () => {
-      socket.emit(socketConfig.events.room.leave, room._id);
       socket.off(socketConfig.events.message.new);
+      socket.off(socketConfig.events.message.update);
     };
-  }, [addMessage, room._id]);
+  }, [replaceMessage, room._id, router, updateMessage]);
 
   return (
     <ChatBoxContext.Provider
