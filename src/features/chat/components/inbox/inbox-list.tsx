@@ -1,19 +1,19 @@
 import { forwardRef, memo, useEffect, useMemo } from 'react';
-import { redirect, useParams } from 'next/navigation';
 
 import { Button } from '@/components/actions/button';
 import { InboxItem } from '@/features/chat/components/inbox-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Room } from '../types';
+import { Room } from '../../types';
 import { Typography } from '@/components/data-display';
 import { cn } from '@/lib/utils';
-import { inboxTypeMap } from './inbox/inbox-main-tab';
+import { inboxTypeMap } from './inbox-main-tab';
 import { roomApi } from '@/features/chat/api/room-api';
 import socket from '@/lib/socket';
 import { socketConfig } from '@/configs/socket-config';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
-import { useInboxContext } from './inbox/inbox-context';
+import { useInboxContext } from './inbox-context';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
 import useStore from '@/stores/use-store';
 

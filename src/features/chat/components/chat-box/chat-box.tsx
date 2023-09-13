@@ -11,7 +11,7 @@ import { Button } from '@/components/actions/button';
 import { ChatBoxFooter } from './chat-box-footer';
 import { ChatBoxProvider } from './chat-box-context';
 import { InboxItemAvatar } from '@/features/chat/components/inbox-item';
-import { MessageBox } from '@/features/chat/components/message-box';
+import { MessageBox } from '@/features/chat/components/chat-box/message-box';
 import { Room } from '@/features/chat/types';
 import { Typography } from '@/components/data-display';
 import { generateRoomDisplay } from '@/features/chat/utils';

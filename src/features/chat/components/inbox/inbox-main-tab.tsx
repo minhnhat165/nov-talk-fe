@@ -4,7 +4,7 @@ import { forwardRef, useState } from 'react';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 import { Button } from '@/components/actions/button';
 import { InboxItem } from '../inbox-item';
-import InboxList from '../inbox-list';
+import InboxList from './inbox-list';
 import Link from 'next/link';
 import { Room } from '../../types';
 import { SearchInput } from '@/components/data-entry';

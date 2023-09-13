@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/solid';
 
 import { Button } from '@/components/actions/button';
-import { ChatCreator } from '@/features/chat/components/chat-creator';
+import { ChatCreator } from '@/features/chat/components/chat-box/chat-creator';
 import { ChatSetting } from '@/features/chat/components/chat-setting';
 import { InboxContext } from './inbox-context';
 import { InboxMainTab } from './inbox-main-tab';

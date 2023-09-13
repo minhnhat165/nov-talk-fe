@@ -16,10 +16,10 @@ import { SearchInput } from '@/components/data-entry';
 import { Typography } from '@/components/data-display';
 import { User } from '@/features/user/types';
 import { UserItem } from '@/features/user/components/user-item';
-import { roomApi } from '../api/room-api';
+import { roomApi } from '../../api/room-api';
 import { searchApi } from '@/features/search/api/search-api';
 import { useDropzone } from 'react-dropzone';
-import { useInboxContext } from './inbox/inbox-context';
+import { useInboxContext } from '../inbox/inbox-context';
 import { useMutation } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/use-search';
 
