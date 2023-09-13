@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from '@/components/data-display/popover';
 import { forwardRef, useState } from 'react';
+import { useChatBox, useMessagesBox } from '../../context';
 
 import { Button } from '@/components/actions/button';
 import Image from 'next/image';
@@ -22,7 +23,6 @@ import { messageApi } from '@/features/chat/api/message-api';
 import { roomApi } from '../../api/room-api';
 import { uploadImage } from '@/utils/upload-img';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
-import { useChatBox } from './chat-box-context';
 import { useDropzone } from 'react-dropzone';
 import { useMutation } from '@tanstack/react-query';
 
@@ -31,7 +31,8 @@ export interface ChatBoxFooterProps
 
 export const ChatBoxFooter = forwardRef<HTMLDivElement, ChatBoxFooterProps>(
   (props, ref) => {
-    const { addMessage, room, replaceMessage, updateRoom } = useChatBox();
+    const { room, updateRoom } = useChatBox();
+    const { addMessage, replaceMessage } = useMessagesBox();
     const currentUser = useAuthStore((s) => s.user);
     const [files, setFiles] = useState<
       {

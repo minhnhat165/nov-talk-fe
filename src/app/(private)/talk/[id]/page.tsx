@@ -1,4 +1,5 @@
 import { ChatBox } from '@/features/chat/components/chat-box';
+import { ChatBoxProvider } from '@/features/chat/context';
 import { Response } from '@/types/api';
 import { Room } from '@/features/chat/types';
 import { fetchApi } from '@/utils/data-fetching';
@@ -23,7 +24,9 @@ const ChatRoomPage = async (props: {
   console.log(room);
   return (
     <div className="h-full w-full overflow-hidden rounded-lg bg-card">
-      {<ChatBox room={room} />}
+      <ChatBoxProvider room={room}>
+        <ChatBox />
+      </ChatBoxProvider>
     </div>
   );
 };

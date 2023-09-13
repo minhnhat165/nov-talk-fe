@@ -1,6 +1,7 @@
-import { CursorPagination, ListResponse, Response } from '@/types/api';
-import { Message, Room } from '../types';
+import { ListResponse, Response } from '@/types/api';
+import { Message, Room } from '@/features/chat/types';
 
+import { CursorPagination } from '@/types/pagination';
 import { axios } from '@/configs/axios-config';
 import { inboxTypeMap } from '../components/inbox/inbox-main-tab';
 import queryString from 'query-string';
@@ -13,7 +14,8 @@ export const roomApi = {
       url: basePath,
       query: params,
     });
-    const res: ListResponse<Room, CursorPagination> = await axios.get(path);
+    const res: Response<ListResponse<Room, CursorPagination>> =
+      await axios.get(path);
     return res.data;
   },
   async createRoom(
@@ -34,7 +36,8 @@ export const roomApi = {
       url: `${basePath}/${roomId}/messages`,
       query: params,
     });
-    const res: ListResponse<Message, CursorPagination> = await axios.get(path);
+    const res: Response<ListResponse<Message, CursorPagination>> =
+      await axios.get(path);
     return res.data;
   },
   async deleteRoom(roomId: string) {
