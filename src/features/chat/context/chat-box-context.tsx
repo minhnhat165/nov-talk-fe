@@ -45,7 +45,13 @@ export const ChatBoxProvider = ({
   );
 
   useEffect(() => {
-    socket.emit(socketConfig.events.room.join, room._id);
+    socket.emit(socketConfig.events.chat.join, room._id);
+    return () => {
+      socket.emit(socketConfig.events.chat.leave, room._id);
+    };
+  }, [room._id]);
+
+  useEffect(() => {
     socket.on(socketConfig.events.room.update, updateRoom);
     socket.on(socketConfig.events.room.delete, handleForceLeaveRoom);
     socket.on(socketConfig.events.room.leave, handleForceLeaveRoom);
@@ -53,7 +59,6 @@ export const ChatBoxProvider = ({
       socket.off(socketConfig.events.room.update, updateRoom);
       socket.off(socketConfig.events.room.delete);
       socket.off(socketConfig.events.room.leave);
-      socket.emit(socketConfig.events.room.leave, room._id);
     };
   }, [handleForceLeaveRoom, room._id, updateRoom]);
 
