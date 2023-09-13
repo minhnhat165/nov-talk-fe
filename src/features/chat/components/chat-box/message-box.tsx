@@ -16,7 +16,7 @@ import { formatTimeDisplay } from '../../utils';
 import { getReadByUsers } from '@/features/chat/utils/get-read-by-users';
 import moment from 'moment';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
-import { useChatBox } from './chat-box-context';
+import { useMessagesBox } from '../../context/messages-box-context';
 import { useScrollDistanceFromTop } from '@/hooks/use-scroll-distance-from-top';
 import { useScrollIntoView } from '@/hooks/use-scroll-into-view';
 
@@ -29,7 +29,7 @@ type MessageGroup = {
 export const MessageBox = ({ room }: { room: Room }) => {
   const currentUserId = useAuthStore((s) => s.user?._id);
   const { hasNextPage, loadMoreMessages, refetchMessages, messages } =
-    useChatBox();
+    useMessagesBox();
 
   const { ref, isScrolled } = useScrollDistanceFromTop(0, true);
   const bottomRef = useRef<HTMLDivElement>(null);

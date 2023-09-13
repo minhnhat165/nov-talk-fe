@@ -9,30 +9,30 @@ import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/actions/button';
 import { ChatBoxFooter } from './chat-box-footer';
-import { ChatBoxProvider } from './chat-box-context';
 import { InboxItemAvatar } from '@/features/chat/components/inbox-item';
 import { MessageBox } from '@/features/chat/components/chat-box/message-box';
+import { MessagesBoxProvider } from '../../context/messages-box-context';
 import { Room } from '@/features/chat/types';
 import { Typography } from '@/components/data-display';
 import { generateRoomDisplay } from '@/features/chat/utils';
 import useAuthStore from '@/features/auth/stores/use-auth-store';
+import { useChatBox } from '@/features/chat/context';
 
-export interface ChatBoxProps {
-  room: Room;
-}
+export interface ChatBoxProps {}
 
 export const ChatBox = (props: ChatBoxProps) => {
+  const { room } = useChatBox();
   const [showSidebar, setShowSidebar] = useState(false);
   return (
     <div className="flex h-full">
       <div className="flex h-full w-full flex-col overflow-hidden">
-        <Header room={props.room} />
-        <ChatBoxProvider room={props.room}>
-          <MessageBox room={props.room} />
+        <Header room={room} />
+        <MessagesBoxProvider room={room}>
+          <MessageBox room={room} />
           <div className="flex min-h-[5rem] w-full items-center justify-center bg-primary/5 px-10">
             <ChatBoxFooter />
           </div>
-        </ChatBoxProvider>
+        </MessagesBoxProvider>
       </div>
       {showSidebar && (
         <div className="w-[22.5rem] shrink-0 rounded-lg border-l bg-card"></div>
