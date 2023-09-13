@@ -22,8 +22,8 @@ type CursorPaginationQuery<TData> = {
 };
 
 export const useCursorPaginationQuery = <TData>({
-  queryFn,
   queryKey,
+  queryFn,
   config,
 }: CursorPaginationQuery<TData>) => {
   const { data, ...rest } = useInfiniteQuery({

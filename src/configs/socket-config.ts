@@ -10,5 +10,9 @@ export const socketConfig = {
       update: 'room.update',
       delete: 'room.delete',
     },
+    chat: {
+      join: 'chat.join',
+      leave: 'chat.leave',
+    },
   },
 };

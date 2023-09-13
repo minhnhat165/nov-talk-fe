@@ -53,6 +53,7 @@ export const ChatBoxProvider = ({
       socket.off(socketConfig.events.room.update, updateRoom);
       socket.off(socketConfig.events.room.delete);
       socket.off(socketConfig.events.room.leave);
+      socket.emit(socketConfig.events.room.leave, room._id);
     };
   }, [handleForceLeaveRoom, room._id, updateRoom]);
 
